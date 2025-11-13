@@ -44,7 +44,7 @@ Welcome to the HRM repository! This project is a modern Human Resource Managemen
 ## Tech Stack
 
 ### Frontend
-- **Framework:** React 18+ with TypeScript
+- **Framework:** NextJS 15 with React 18+ with TypeScript
 - **Styling:** Tailwind CSS / Material-UI
 - **State Management:** Redux Toolkit / Zustand
 - **Routing:** React Router v6
@@ -58,7 +58,7 @@ Welcome to the HRM repository! This project is a modern Human Resource Managemen
 
 ### Development Tools
 - **Package Manager:** npm / yarn / pnpm
-- **Build Tool:** Vite / Create React App
+- **Build Tool:** NextJS
 - **Code Quality:** ESLint, Prettier
 - **Type Checking:** TypeScript
 - **Testing:** Jest, React Testing Library
