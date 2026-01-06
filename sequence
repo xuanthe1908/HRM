@@ -1,0 +1,22 @@
+sequenceDiagram
+  participant Employee
+  participant LeaveService
+  participant Supervisor
+  participant HRSystem
+  participant NotificationService
+
+  Employee->>LeaveService: submitLeave(request)
+  LeaveService->>LeaveService: validateRequest(request)
+  alt valid
+    LeaveService->>LeaveService: savePendingRequest
+    LeaveService->>Supervisor: notifyApproval(request)
+    Supervisor-->>LeaveService: respond(approve/reject)
+    alt approve
+      LeaveService->>HRSystem: updateLeaveBalance(employee, days)
+      LeaveService->>NotificationService: sendApprovalNotification(employee)
+    else reject
+      LeaveService->>NotificationService: sendRejectionNotification(employee)
+    end
+  else invalid
+    LeaveService->>NotificationService: sendValidationError(employee)
+  end
