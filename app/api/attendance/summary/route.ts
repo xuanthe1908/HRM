@@ -117,7 +117,10 @@ export async function POST(req: NextRequest) {
           name: 'Chưa liên kết nhân viên',
         };
       const existing = summaryByEmp.get(day.employee_id);
-      const workValue = 1; // from raw logs we treat as 1 work day if any logs exist
+      const diffMs = day.max.getTime() - day.min.getTime();
+      const hours = diffMs > 0 ? diffMs / (1000 * 60 * 60) : 0;
+      const workValue = Math.max(0, Math.min(1, Math.round((hours / 8) * 100) / 100));
+      const overtimeHours = Math.max(0, Math.round((hours - 8) * 100) / 100);
       if (!existing) {
         summaryByEmp.set(day.employee_id, {
           employee_id: day.employee_id,
@@ -127,10 +130,11 @@ export async function POST(req: NextRequest) {
           total_overtime_days: 0,
           total_paid_leave: 0,
           total_unpaid_leave: 0,
-          total_overtime_hours: 0,
+          total_overtime_hours: overtimeHours,
         });
       } else {
         existing.total_work_days += workValue;
+        existing.total_overtime_hours += overtimeHours;
       }
     }
 
@@ -254,7 +258,10 @@ export async function GET(req: NextRequest) {
           name: 'Chưa liên kết nhân viên',
         };
       const existing = summaryByEmp.get(day.employee_id);
-      const workValue = 1;
+      const diffMs = day.max.getTime() - day.min.getTime();
+      const hours = diffMs > 0 ? diffMs / (1000 * 60 * 60) : 0;
+      const workValue = Math.max(0, Math.min(1, Math.round((hours / 8) * 100) / 100));
+      const overtimeHours = Math.max(0, Math.round((hours - 8) * 100) / 100);
       if (!existing) {
         summaryByEmp.set(day.employee_id, {
           employee_id: day.employee_id,
@@ -264,10 +271,11 @@ export async function GET(req: NextRequest) {
           total_overtime_days: 0,
           total_paid_leave: 0,
           total_unpaid_leave: 0,
-          total_overtime_hours: 0,
+          total_overtime_hours: overtimeHours,
         });
       } else {
         existing.total_work_days += workValue;
+        existing.total_overtime_hours += overtimeHours;
       }
     }
 

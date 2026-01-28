@@ -93,8 +93,11 @@ export async function GET(req: NextRequest) {
     }
 
     const attendance = Array.from(grouped.values()).map((g) => {
-      const hasBoth = !!g.min && !!g.max;
-      const workValue = hasBoth ? 1 : 0.5;
+      const diffMs = g.max.getTime() - g.min.getTime();
+      const hours = diffMs > 0 ? diffMs / (1000 * 60 * 60) : 0;
+      // 8 hours = 1 công, otherwise proportional. Clamp to [0, 1].
+      const rawWorkValue = hours / 8;
+      const workValue = Math.max(0, Math.min(1, Math.round(rawWorkValue * 100) / 100));
       return {
         id: `${g.employee_id}-${g.date}`,
         employee_id: g.employee_id,
@@ -102,8 +105,9 @@ export async function GET(req: NextRequest) {
         status: 'present_full',
         check_in_time: g.min.toISOString(),
         check_out_time: g.max.toISOString(),
+        working_hours: Math.round(hours * 100) / 100,
         work_value: workValue,
-        overtime_hours: 0,
+        overtime_hours: Math.max(0, Math.round((hours - 8) * 100) / 100),
       };
     });
 
