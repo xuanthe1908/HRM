@@ -121,7 +121,7 @@ export default function AttendancePage() {
     const [summaryRes, employeesRes, attendanceRes, departmentsRes, positionsRes] = await Promise.all([
       attendanceService.getAttendanceSummary(parseInt(month), parseInt(year)),
       employeeService.getEmployees(),
-      attendanceService.getAttendances(),
+      attendanceService.getAttendances(parseInt(month), parseInt(year)),
       departmentService.getDepartments(),
       positionService.getPositions()
     ]);

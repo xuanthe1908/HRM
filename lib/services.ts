@@ -284,8 +284,14 @@ export const positionService = {
 
 // Attendance Services
 export const attendanceService = {
-  async getAttendances(): Promise<ApiResponse<Attendance[]>> {
-    return apiClient.get(API_ENDPOINTS.ATTENDANCE.LIST);
+  async getAttendances(month?: number, year?: number): Promise<ApiResponse<Attendance[]>> {
+    const params = new URLSearchParams();
+    if (month) params.append('month', String(month));
+    if (year) params.append('year', String(year));
+    const url = params.toString()
+      ? `${API_ENDPOINTS.ATTENDANCE.LIST}?${params.toString()}`
+      : API_ENDPOINTS.ATTENDANCE.LIST;
+    return apiClient.get(url);
   },
 
   async getAttendance(id: string): Promise<ApiResponse<Attendance>> {
